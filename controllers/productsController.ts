@@ -1,8 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
+import Product from "../models/product";
 
 class ProductsController {
-  products: Array<{ title: string }> = [];
-
   getAddProductPage = (
     req: Request,
     res: Response,
@@ -18,18 +17,21 @@ class ProductsController {
   };
 
   postAddProduct = (req: Request, res: Response, next: NextFunction): void => {
-    this.products.push({ title: req.body.title });
+    const product = new Product(req.body.title);
+    product.save();
     res.redirect("/");
   };
 
   getProducts = (req: Request, res: Response, next: NextFunction): void => {
-    res.render("shop", {
-      prods: this.products,
-      pageTitle: "Shop",
-      path: "/",
-      hasProducts: this.products.length > 0,
-      activeShop: true,
-      productCSS: true,
+    Product.fetchAll((products) => {
+      res.render("shop", {
+        prods: products,
+        pageTitle: "Shop",
+        path: "/",
+        hasProducts: products.length > 0,
+        activeShop: true,
+        productCSS: true,
+      });
     });
   };
 }
