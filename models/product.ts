@@ -18,9 +18,20 @@ const getProductsFromFile = (callback: (product: Product[]) => void) => {
 
 export default class Product {
   title: string;
+  imageUrl: string;
+  description: string;
+  price: number;
 
-  constructor(title: string) {
+  constructor(
+    title: string,
+    imageUrl: string,
+    description: string,
+    price: number
+  ) {
     this.title = title;
+    this.imageUrl = imageUrl;
+    this.description = description;
+    this.price = price;
   }
 
   save(): void {
@@ -36,7 +47,7 @@ export default class Product {
     products.push(this);
   }
 
-  static fetchAll(callback: (product: Product[]) => void): void {
+  static fetchAll(callback: (products: Product[]) => void): void {
     getProductsFromFile(callback);
   }
 }

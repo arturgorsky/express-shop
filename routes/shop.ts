@@ -1,6 +1,14 @@
 import express from "express";
-import productsController from "../controllers/productsController";
+import shopController from "../controllers/shopController";
 
 export const shopRoutes = express.Router();
 
-shopRoutes.get("/", productsController.getProducts);
+shopRoutes.get("/", shopController.getProducts);
+
+shopRoutes.get("/products", shopController.getProducts);
+
+shopRoutes.get("/cart", shopController.getCart);
+
+shopRoutes.get("/orders", shopController.getOrders);
+
+shopRoutes.get("/checkout", shopController.getCheckout);
