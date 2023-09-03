@@ -21,6 +21,7 @@ export default class Product {
   imageUrl: string;
   description: string;
   price: number;
+  id: string;
 
   constructor(
     title: string,
@@ -32,6 +33,7 @@ export default class Product {
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
+    this.id = Math.random().toString();
   }
 
   save(): void {

@@ -42,6 +42,12 @@ class ShopController {
       path: "/checkout",
     });
   };
+
+  getProduct = (req: Request, res: Response, next: NextFunction) => {
+    const { productId } = req.params;
+    console.log(productId);
+    res.redirect("/");
+  };
 }
 
 const shopController = new ShopController();

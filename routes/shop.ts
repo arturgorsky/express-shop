@@ -7,6 +7,8 @@ shopRoutes.get("/", shopController.getProducts);
 
 shopRoutes.get("/products", shopController.getProducts);
 
+shopRoutes.get("/products/:productId", shopController.getProduct);
+
 shopRoutes.get("/cart", shopController.getCart);
 
 shopRoutes.get("/orders", shopController.getOrders);
