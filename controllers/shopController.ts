@@ -16,7 +16,7 @@ class ShopController {
     Product.fetchAll((products) => {
       res.render("shop/index", {
         products,
-        pageTittle: "shop",
+        pageTitle: "shop",
         path: "/",
       });
     });
@@ -52,6 +52,12 @@ class ShopController {
         path: "/products",
       });
     });
+  };
+
+  postCart = (req: Request, res: Response, next: NextFunction) => {
+    const { productId } = req.body;
+    console.log(productId);
+    res.redirect("/");
   };
 }
 
