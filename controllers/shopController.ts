@@ -45,8 +45,13 @@ class ShopController {
 
   getProduct = (req: Request, res: Response, next: NextFunction) => {
     const { productId } = req.params;
-    console.log(productId);
-    res.redirect("/");
+    Product.findById(productId, (product) => {
+      res.render("shop/product-detail", {
+        product,
+        pageTitle: "Product Details",
+        path: "/products",
+      });
+    });
   };
 }
 

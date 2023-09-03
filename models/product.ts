@@ -52,4 +52,16 @@ export default class Product {
   static fetchAll(callback: (products: Product[]) => void): void {
     getProductsFromFile(callback);
   }
+
+  static findById(
+    productId: string,
+    callback: (product: Product) => void
+  ): void {
+    getProductsFromFile((products) => {
+      const product = products.find((prod) => prod.id === productId);
+      if (product) {
+        callback(product);
+      }
+    });
+  }
 }
