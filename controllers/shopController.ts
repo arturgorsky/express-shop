@@ -1,4 +1,5 @@
 import Product from "../models/product";
+import cart from "../models/cart";
 import { NextFunction, Request, Response } from "express";
 
 class ShopController {
@@ -56,8 +57,12 @@ class ShopController {
 
   postCart = (req: Request, res: Response, next: NextFunction) => {
     const { productId } = req.body;
-    console.log(productId);
-    res.redirect("/");
+    Product.findById(productId, (product) => {
+      cart.addProduct(product.id, product.price);
+    });
+    setTimeout(() => {
+      res.redirect("/cart");
+    }, 1000);
   };
 }
 

@@ -4,7 +4,7 @@ import { rootDir } from "../util/path";
 
 const products: Array<Product> = [];
 
-const getProductsFromFile = (callback: (product: Product[]) => void) => {
+export const getProductsFromFile = (callback: (product: Product[]) => void) => {
   const filePath = path.join(rootDir, "data", "products.json");
 
   fs.readFile(filePath, (err, fileContent) => {
@@ -42,7 +42,7 @@ export default class Product {
     getProductsFromFile((products) => {
       products.push(this);
       fs.writeFile(filePath, JSON.stringify(products), (err) => {
-        console.log(err);
+        err && console.log("product:", err);
       });
     });
 
