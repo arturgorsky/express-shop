@@ -2,8 +2,6 @@ import fs from "fs";
 import path from "path";
 import { rootDir } from "../util/path";
 
-const products: Array<Product> = [];
-
 export const getProductsFromFile = (callback: (product: Product[]) => void) => {
   const filePath = path.join(rootDir, "data", "products.json");
 
@@ -43,7 +41,7 @@ export default class Product {
     getProductsFromFile((products) => {
       if (this.id) {
         const existingProductIndex = products.findIndex(
-          (prod) => prod.id === this.id
+          (product) => product.id === this.id
         );
 
         const updatedProducts = [...products];
@@ -51,17 +49,14 @@ export default class Product {
         fs.writeFile(filePath, JSON.stringify(updatedProducts), (err) => {
           err && console.log("product:", err);
         });
-        products = updatedProducts;
       } else {
         this.id = Math.random().toString();
+        products.push(this);
         fs.writeFile(filePath, JSON.stringify(products), (err) => {
           err && console.log("product:", err);
         });
-        products.push(this);
       }
     });
-
-    products.push(this);
   }
 
   static fetchAll(callback: (products: Product[]) => void): void {
@@ -77,6 +72,17 @@ export default class Product {
       if (product) {
         callback(product);
       }
+    });
+  }
+
+  static deleteById(productId: string): void {
+    getProductsFromFile((products) => {
+      const filePath = path.join(rootDir, "data", "products.json");
+      const updatedProducts = products.filter((prod) => prod.id !== productId);
+
+      fs.writeFile(filePath, JSON.stringify(updatedProducts), (err) => {
+        err && console.log("product:", err);
+      });
     });
   }
 }
