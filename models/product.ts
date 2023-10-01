@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { rootDir } from "../util/path";
+import cart from "./cart";
 
 export const getProductsFromFile = (callback: (product: Product[]) => void) => {
   const filePath = path.join(rootDir, "data", "products.json");
@@ -78,7 +79,13 @@ export default class Product {
   static deleteById(productId: string): void {
     getProductsFromFile((products) => {
       const filePath = path.join(rootDir, "data", "products.json");
+      const productToDelete = products.find(
+        (prod) => prod.id === productId
+      ) as Product;
       const updatedProducts = products.filter((prod) => prod.id !== productId);
+
+      // If exist delete product from the cart
+      cart.deleteProduct(productId, productToDelete.price);
 
       fs.writeFile(filePath, JSON.stringify(updatedProducts), (err) => {
         err && console.log("product:", err);
