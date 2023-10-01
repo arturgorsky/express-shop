@@ -1,16 +1,1 @@
-[
-  {
-    "title": "A Book",
-    "imageUrl": "https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg",
-    "description": "This is an awesome book!",
-    "price": 19,
-    "id": "123"
-  },
-  {
-    "title": "Poster",
-    "imageUrl": "https://www.publicdomainpictures.net/pictures/290000/velka/san-francisco-travel-poster-1547910957MXO.jpg",
-    "description": "Awesome poster of SF",
-    "price": 11.99,
-    "id": "0.26195804039065074"
-  }
-]
+[{"title":"A Book","imageUrl":"https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg","description":"This is an awesome book!","price":19,"id":"123"},{"title":"Poster","imageUrl":"https://www.publicdomainpictures.net/pictures/290000/velka/san-francisco-travel-poster-1547910957MXO.jpg","description":"Awesome poster of SF","price":11.99,"id":"0.26195804039065074"},{"title":"","imageUrl":"","description":"","price":"","id":"0.1247461723312695"}]
