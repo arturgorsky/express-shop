@@ -24,26 +24,41 @@ export default class Product {
   id: string;
 
   constructor(
+    id: string,
     title: string,
     imageUrl: string,
     description: string,
     price: number
   ) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
-    this.id = Math.random().toString();
   }
 
   save(): void {
     const filePath = path.join(rootDir, "data", "products.json");
 
     getProductsFromFile((products) => {
-      products.push(this);
-      fs.writeFile(filePath, JSON.stringify(products), (err) => {
-        err && console.log("product:", err);
-      });
+      if (this.id) {
+        const existingProductIndex = products.findIndex(
+          (prod) => prod.id === this.id
+        );
+
+        const updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = this;
+        fs.writeFile(filePath, JSON.stringify(updatedProducts), (err) => {
+          err && console.log("product:", err);
+        });
+        products = updatedProducts;
+      } else {
+        this.id = Math.random().toString();
+        fs.writeFile(filePath, JSON.stringify(products), (err) => {
+          err && console.log("product:", err);
+        });
+        products.push(this);
+      }
     });
 
     products.push(this);

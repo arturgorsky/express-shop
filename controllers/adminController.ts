@@ -23,7 +23,7 @@ class AdminController {
     next: NextFunction
   ): void => {
     const { title, imageUrl, description, price } = req.body;
-    const product = new Product(title, imageUrl, description, price);
+    const product = new Product("", title, imageUrl, description, price);
     product.save();
     res.redirect("/");
   };
@@ -68,6 +68,22 @@ class AdminController {
         productCSS: true,
       });
     });
+  };
+
+  postEditProduct = (req: Request, res: Response, next: NextFunction): void => {
+    const { productId, title, imageUrl, price, description } = req.body;
+
+    const updatedProduct = new Product(
+      productId,
+      title,
+      imageUrl,
+      description,
+      price
+    );
+
+    updatedProduct.save();
+
+    return res.redirect("/admin/products");
   };
 }
 
