@@ -85,6 +85,17 @@ class AdminController {
 
     return res.redirect("/admin/products");
   };
+
+  postDeleteProduct = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): void => {
+    const { productId } = req.params;
+    Product.deleteById(productId);
+
+    return res.redirect("/admin/products");
+  };
 }
 
 const adminController = new AdminController();
