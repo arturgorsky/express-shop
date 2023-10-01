@@ -24,9 +24,27 @@ class ShopController {
   };
 
   getCart = (req: Request, res: Response, next: NextFunction) => {
-    res.render("shop/cart", {
-      pageTitle: "Your Cart",
-      path: "cart",
+    cart.getCartProducts((cartProducts) => {
+      Product.fetchAll((products) => {
+        const productsInCart = [];
+        for (const product of products) {
+          const cartProductData = cartProducts.find(
+            (prod) => prod.id === product.id
+          );
+          if (cartProductData) {
+            productsInCart.push({
+              ...product,
+              quantity: cartProductData.quantity,
+            });
+          }
+        }
+
+        res.render("shop/cart", {
+          pageTitle: "Your Cart",
+          path: "cart",
+          products: productsInCart,
+        });
+      });
     });
   };
 
@@ -63,6 +81,14 @@ class ShopController {
     setTimeout(() => {
       res.redirect("/cart");
     }, 1000);
+  };
+
+  postCartDeleteProduct = (req: Request, res: Response, next: NextFunction) => {
+    const { productId } = req.body;
+    Product.findById(productId, (prod) => {
+      cart.deleteProduct(productId, prod.price);
+      return res.redirect("/cart");
+    });
   };
 }
 

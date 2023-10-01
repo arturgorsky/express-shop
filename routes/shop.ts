@@ -16,3 +16,5 @@ shopRoutes.post("/cart", shopController.postCart);
 shopRoutes.get("/orders", shopController.getOrders);
 
 shopRoutes.get("/checkout", shopController.getCheckout);
+
+shopRoutes.post("/cart-delete-item", shopController.postCartDeleteProduct);

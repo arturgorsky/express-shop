@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { rootDir } from "../util/path";
+import Product from "./product";
 
 const filePath = path.join(rootDir, "data", "cart.json");
 
@@ -73,6 +74,23 @@ class Cart {
       this.products = this.products.filter((prod) => prod.id !== productId);
       this.totalPrice -= productPrice * productQuantity;
       fs.writeFileSync(filePath, JSON.stringify(this));
+    });
+  }
+
+  getCartProducts(callback: (cartProducts: CartProduct[]) => void) {
+    fs.readFile(filePath, (err, fileContent) => {
+      if (err) {
+        // No cart existing
+        return;
+      }
+
+      const stringified = fileContent.toString();
+      const cartContents = JSON.parse(stringified);
+
+      this.products = cartContents.products;
+      this.totalPrice = cartContents.totalPrice;
+
+      callback(this.products);
     });
   }
 }
