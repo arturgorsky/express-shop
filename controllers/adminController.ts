@@ -91,7 +91,7 @@ class AdminController {
     res: Response,
     next: NextFunction
   ): void => {
-    const { productId } = req.params;
+    const { productId } = req.body;
     Product.deleteById(productId);
 
     return res.redirect("/admin/products");

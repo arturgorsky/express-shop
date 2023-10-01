@@ -16,7 +16,4 @@ adminRoutes.get("/edit-product/:productId", adminController.getEditProductPage);
 
 adminRoutes.post("/edit-product", adminController.postEditProduct);
 
-adminRoutes.post(
-  "/delete-product/:productId",
-  adminController.postDeleteProduct
-);
+adminRoutes.post("/delete-product", adminController.postDeleteProduct);
