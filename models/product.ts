@@ -1,19 +1,6 @@
-import fs from "fs";
-import path from "path";
-import { rootDir } from "../util/path";
 import cart from "./cart";
-
-export const getProductsFromFile = (callback: (product: Product[]) => void) => {
-  const filePath = path.join(rootDir, "data", "products.json");
-
-  fs.readFile(filePath, (err, fileContent) => {
-    if (err) {
-      callback([]);
-    } else {
-      callback(JSON.parse(fileContent.toString()));
-    }
-  });
-};
+import database from "../util/database";
+import { FieldPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 
 export default class Product {
   title: string;
@@ -36,60 +23,25 @@ export default class Product {
     this.price = price;
   }
 
-  save(): void {
-    const filePath = path.join(rootDir, "data", "products.json");
-
-    getProductsFromFile((products) => {
-      if (this.id) {
-        const existingProductIndex = products.findIndex(
-          (product) => product.id === this.id
-        );
-
-        const updatedProducts = [...products];
-        updatedProducts[existingProductIndex] = this;
-        fs.writeFile(filePath, JSON.stringify(updatedProducts), (err) => {
-          err && console.log("product:", err);
-        });
-      } else {
-        this.id = Math.random().toString();
-        products.push(this);
-        fs.writeFile(filePath, JSON.stringify(products), (err) => {
-          err && console.log("product:", err);
-        });
-      }
-    });
+  save() {
+    return database.execute(
+      "INSERT INTO products (title, price, description, imageUrl) VALUES (?, ?, ?, ?)",
+      [this.title, this.price, this.description, this.imageUrl]
+    ) as unknown as Promise<ResultSetHeader[]>;
   }
 
-  static fetchAll(callback: (products: Product[]) => void): void {
-    getProductsFromFile(callback);
+  static async fetchAll(): Promise<[Product[], FieldPacket[]]> {
+    return (await database.execute(
+      "SELECT * FROM products"
+    )) as unknown as Promise<[Product[], FieldPacket[]]>;
   }
 
-  static findById(
-    productId: string,
-    callback: (product: Product) => void
-  ): void {
-    getProductsFromFile((products) => {
-      const product = products.find((prod) => prod.id === productId);
-      if (product) {
-        callback(product);
-      }
-    });
+  static findById(productId: string): Promise<[Product[], FieldPacket[]]> {
+    console.log(productId);
+    return database.execute("SELECT * FROM products WHERE products.id=?", [
+      productId,
+    ]) as unknown as Promise<[Product[], FieldPacket[]]>;
   }
 
-  static deleteById(productId: string): void {
-    getProductsFromFile((products) => {
-      const filePath = path.join(rootDir, "data", "products.json");
-      const productToDelete = products.find(
-        (prod) => prod.id === productId
-      ) as Product;
-      const updatedProducts = products.filter((prod) => prod.id !== productId);
-
-      // If exist delete product from the cart
-      cart.deleteProduct(productId, productToDelete.price);
-
-      fs.writeFile(filePath, JSON.stringify(updatedProducts), (err) => {
-        err && console.log("product:", err);
-      });
-    });
-  }
+  static deleteById(productId: string): void {}
 }

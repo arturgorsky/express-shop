@@ -17,22 +17,23 @@ class AdminController {
     });
   };
 
-  postAddProduct = (
+  postAddProduct = async (
     req: Request<Product>,
     res: Response,
     next: NextFunction
-  ): void => {
+  ): Promise<void> => {
     const { title, imageUrl, description, price } = req.body;
     const product = new Product("", title, imageUrl, description, price);
-    product.save();
+    const result = await product.save();
+
     res.redirect("/");
   };
 
-  getEditProductPage = (
+  getEditProductPage = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ): void => {
+  ): Promise<void> => {
     const editMode = req.query["edit"] === "true";
 
     if (!editMode) {
@@ -41,33 +42,31 @@ class AdminController {
 
     const { productId } = req.params;
 
-    Product.findById(productId, (product) => {
-      if (!product) {
-        return res.redirect("/");
-      }
-      res.render("admin/edit-product", {
-        pageTitle: "Edit Product",
-        path: "/admin/edit-product",
-        formsCSS: true,
-        productCSS: true,
-        activeAddProduct: true,
-        editing: editMode,
-        product: product,
-      });
-    });
+    // Product.findById(productId, (product) => {
+    //   if (!product) {
+    //     return res.redirect("/");
+    //   }
+    //   res.render("admin/edit-product", {
+    //     pageTitle: "Edit Product",
+    //     path: "/admin/edit-product",
+    //     formsCSS: true,
+    //     productCSS: true,
+    //     activeAddProduct: true,
+    //     editing: editMode,
+    //     product: product,
+    //   });
+    // });
   };
 
   getProducts = (req: Request, res: Response, next: NextFunction): void => {
-    Product.fetchAll((products) => {
-      res.render("admin/products", {
-        products,
-        pageTitle: "Shop",
-        path: "/",
-        hasProducts: products.length > 0,
-        activeShop: true,
-        productCSS: true,
-      });
-    });
+    //   res.render("admin/products", {
+    //     products,
+    //     pageTitle: "Shop",
+    //     path: "/",
+    //     hasProducts: products.length > 0,
+    //     activeShop: true,
+    //     productCSS: true,
+    //   });
   };
 
   postEditProduct = (req: Request, res: Response, next: NextFunction): void => {

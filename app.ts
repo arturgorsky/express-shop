@@ -5,6 +5,7 @@ import { adminRoutes } from "./routes/admin";
 import { shopRoutes } from "./routes/shop";
 import uiController from "./controllers/uiController";
 import db from "./util/database";
+import Product from "./models/product";
 
 const app = express();
 
@@ -13,12 +14,6 @@ app.set("views", "views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
-
-db.execute("SELECT * FROM products")
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => console.log(err));
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
