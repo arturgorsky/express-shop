@@ -1,5 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import Product from "../models/product";
+import Product, { IProduct } from "../models/product";
+import { Model } from "sequelize";
 
 class AdminController {
   getAddProductPage = (
@@ -18,13 +19,21 @@ class AdminController {
   };
 
   postAddProduct = async (
-    req: Request<Product>,
+    req: Request<any>,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     const { title, imageUrl, description, price } = req.body;
-    const product = new Product("", title, imageUrl, description, price);
-    const result = await product.save();
+    try {
+      await Product.create({
+        title: title,
+        price: price,
+        imageUrl: imageUrl,
+        description: description,
+      });
+    } catch (error) {
+      console.log(error);
+    }
 
     res.redirect("/");
   };
@@ -41,57 +50,68 @@ class AdminController {
     }
 
     const { productId } = req.params;
+    const product = await Product.findByPk(productId);
 
-    // Product.findById(productId, (product) => {
-    //   if (!product) {
-    //     return res.redirect("/");
-    //   }
-    //   res.render("admin/edit-product", {
-    //     pageTitle: "Edit Product",
-    //     path: "/admin/edit-product",
-    //     formsCSS: true,
-    //     productCSS: true,
-    //     activeAddProduct: true,
-    //     editing: editMode,
-    //     product: product,
-    //   });
-    // });
+    res.render("admin/edit-product", {
+      pageTitle: "Edit Product",
+      path: "/admin/edit-product",
+      formsCSS: true,
+      productCSS: true,
+      activeAddProduct: true,
+      editing: editMode,
+      product: product,
+    });
   };
 
-  getProducts = (req: Request, res: Response, next: NextFunction): void => {
-    //   res.render("admin/products", {
-    //     products,
-    //     pageTitle: "Shop",
-    //     path: "/",
-    //     hasProducts: products.length > 0,
-    //     activeShop: true,
-    //     productCSS: true,
-    //   });
+  getProducts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const products = await Product.findAll();
+    res.render("admin/products", {
+      products,
+      pageTitle: "Shop",
+      path: "/",
+      hasProducts: products.length > 0,
+      activeShop: true,
+      productCSS: true,
+    });
   };
 
-  postEditProduct = (req: Request, res: Response, next: NextFunction): void => {
+  postEditProduct = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     const { productId, title, imageUrl, price, description } = req.body;
 
-    const updatedProduct = new Product(
-      productId,
-      title,
-      imageUrl,
-      description,
-      price
-    );
+    const productToUpdate = (await Product.findByPk(
+      productId
+    )) as unknown as Model<IProduct, IProduct>;
 
-    updatedProduct.save();
+    // @ts-ignore
+    productToUpdate.title = title;
+    // @ts-ignore
+    productToUpdate.imgageUrl = imageUrl;
+    // @ts-ignore
+    productToUpdate.price = price;
+    // @ts-ignore
+    productToUpdate.description = description;
+
+    await productToUpdate.save();
 
     return res.redirect("/admin/products");
   };
 
-  postDeleteProduct = (
+  postDeleteProduct = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ): void => {
+  ): Promise<void> => {
     const { productId } = req.body;
-    Product.deleteById(productId);
+    const product = await Product.findByPk(productId);
+    product?.destroy();
 
     return res.redirect("/admin/products");
   };

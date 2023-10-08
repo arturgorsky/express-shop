@@ -25,6 +25,7 @@ form {
 
 .product-image {
   max-width: 400px;
+  height: 20rem;
 }
 
 .main-header {

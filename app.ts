@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import { adminRoutes } from "./routes/admin";
 import { shopRoutes } from "./routes/shop";
 import uiController from "./controllers/uiController";
-import db from "./util/database";
+import sequelizeInstance from "./util/database";
 import Product from "./models/product";
 
 const app = express();
@@ -19,5 +19,11 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 app.use(uiController.get404Page);
-
-app.listen(3000);
+console.log(Product);
+sequelizeInstance
+  .sync()
+  .then((result) => {
+    console.log(result);
+    app.listen(3000);
+  })
+  .catch((err) => console.log(err));

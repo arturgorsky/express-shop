@@ -1,10 +1,10 @@
-import Product from "../models/product";
+import Product, { IProduct } from "../models/product";
 import cart from "../models/cart";
 import { NextFunction, Request, Response } from "express";
 
 class ShopController {
   getProducts = async (req: Request, res: Response, next: NextFunction) => {
-    const [products, fieldData] = await Product.fetchAll();
+    const products = await Product.findAll();
 
     res.render("shop/product-list", {
       products,
@@ -14,7 +14,7 @@ class ShopController {
   };
 
   getIndex = async (req: Request, res: Response, next: NextFunction) => {
-    const [products, fieldData] = await Product.fetchAll();
+    const products = await Product.findAll();
     res.render("shop/index", {
       products,
       pageTitle: "shop",
@@ -62,9 +62,8 @@ class ShopController {
 
   getProduct = async (req: Request, res: Response, next: NextFunction) => {
     const { productId } = req.params;
+    const product = (await Product.findByPk(productId)) as unknown as IProduct;
 
-    const [products] = await Product.findById(productId);
-    const [product] = products;
     res.render("shop/product-detail", {
       product: product,
       pageTitle: product.title,
