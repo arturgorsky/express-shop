@@ -1,4 +1,4 @@
-import sequelize from "sequelize";
+import Sequelize from "sequelize";
 import sequelizeInstance from "../util/database";
 
 export interface IProduct {
@@ -11,22 +11,22 @@ export interface IProduct {
 
 const Product = sequelizeInstance.define("product", {
   id: {
-    type: sequelize.INTEGER,
+    type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
-  title: sequelize.STRING,
+  title: Sequelize.STRING,
   price: {
-    type: sequelize.DOUBLE,
+    type: Sequelize.DOUBLE,
     allowNull: false,
   },
   imageUrl: {
-    type: sequelize.STRING,
+    type: Sequelize.STRING,
     allowNull: false,
   },
   description: {
-    type: sequelize.STRING,
+    type: Sequelize.STRING,
     allowNull: false,
   },
 });

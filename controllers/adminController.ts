@@ -1,6 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import Product, { IProduct } from "../models/product";
 import { Model } from "sequelize";
+import User from "../models/user";
 
 class AdminController {
   getAddProductPage = (
@@ -23,17 +24,14 @@ class AdminController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const { title, imageUrl, description, price } = req.body;
-    try {
-      await Product.create({
-        title: title,
-        price: price,
-        imageUrl: imageUrl,
-        description: description,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const { title, imageUrl, description, price, user } = req.body;
+
+    await user.createProduct({
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      description: description,
+    });
 
     res.redirect("/");
   };
@@ -50,7 +48,9 @@ class AdminController {
     }
 
     const { productId } = req.params;
-    const product = await Product.findByPk(productId);
+    const { user } = req.body;
+
+    const product = (await user.getProducts({ where: { id: productId } }))[0];
 
     res.render("admin/edit-product", {
       pageTitle: "Edit Product",
@@ -68,7 +68,9 @@ class AdminController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const products = await Product.findAll();
+    const { user } = req.body;
+    const products = await user.getProducts();
+
     res.render("admin/products", {
       products,
       pageTitle: "Shop",
